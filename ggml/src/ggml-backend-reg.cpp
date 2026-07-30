@@ -78,6 +78,10 @@
 #include "ggml-cann.h"
 #endif
 
+#ifdef GGML_USE_LPU
+#include "ggml-lpu.h"
+#endif
+
 #ifdef GGML_USE_ZENDNN
 #include "ggml-zendnn.h"
 #endif
@@ -155,6 +159,9 @@ struct ggml_backend_registry {
 #endif
 #ifdef GGML_USE_CANN
         register_backend(ggml_backend_cann_reg());
+#endif
+#ifdef GGML_USE_LPU
+        register_backend(ggml_backend_lpu_reg());
 #endif
 #ifdef GGML_USE_BLAS
         register_backend(ggml_backend_blas_reg());
