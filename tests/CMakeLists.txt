@@ -265,6 +265,16 @@ if (NOT LLAMA_SANITIZE_ADDRESS AND NOT GGML_SCHED_NO_REALLOC)
 endif()
 llama_build_and_test(test-backend-ops.cpp)
 
+# LPU backend validation test (built only when GGML_LPU is enabled)
+if (GGML_LPU)
+    llama_build(test-lpu-backend.cpp)
+    # Link against ggml-lpu so the test can include its internal headers
+    target_include_directories(test-lpu-backend PRIVATE
+        ${PROJECT_SOURCE_DIR}/ggml/src/ggml-lpu)
+    target_link_libraries(test-lpu-backend PRIVATE ggml-lpu)
+    llama_test(test-lpu-backend NAME test-lpu-backend LABEL "lpu")
+endif()
+
 llama_build_and_test(test-model-load-cancel.cpp LABEL "model")
 llama_build_and_test(test-autorelease.cpp       LABEL "model")
 llama_build_and_test(test-backend-sampler.cpp   LABEL "model")
