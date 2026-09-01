@@ -5,7 +5,7 @@ description: LPU 后端开发工作流：运行测试、提交代码、推送到
 
 LPU 后端开发的三段工作流：**test → commit → push**。每段独立可运行，也可串联执行。
 
-仓库根目录：`/home/lixiang/Workspace/knowledge/llm_infra/llama.cpp`
+仓库根目录：`.`（从 llama.cpp 仓库根目录运行）
 
 ---
 
@@ -20,7 +20,6 @@ cc -shared -o /tmp/lpu_stub/lib/liblpu_nn.so      -x c /dev/null
 
 **构建**：
 ```bash
-cd /home/lixiang/Workspace/knowledge/llm_infra/llama.cpp
 cmake -B build -DGGML_LPU=ON -DLPU_INSTALL_DIR=/tmp/lpu_stub -DCMAKE_BUILD_TYPE=Release
 cmake --build build --target test-lpu-backend -j$(nproc)
 ```
