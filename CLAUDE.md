@@ -46,6 +46,26 @@ bash ./ci/run.sh ./tmp/results ./tmp/mnt
 # With CUDA: GG_BUILD_CUDA=1 bash ./ci/run.sh ./tmp/results ./tmp/mnt
 ```
 
+### LPU backend tests
+
+The LPU backend test can run against stub SDK libraries when a hardware SDK is unavailable:
+
+```bash
+# Create the SDK library placeholders once
+mkdir -p /tmp/lpu_stub/lib /tmp/lpu_stub/include
+cc -shared -o /tmp/lpu_stub/lib/liblpu_runtime.so -x c /dev/null
+cc -shared -o /tmp/lpu_stub/lib/liblpu_nn.so      -x c /dev/null
+
+# Configure and build the LPU test target
+cmake -B build -DGGML_LPU=ON -DLPU_INSTALL_DIR=/tmp/lpu_stub -DCMAKE_BUILD_TYPE=Release
+cmake --build build --target test-lpu-backend -j$(nproc)
+
+# Run the test binary
+LD_LIBRARY_PATH=/tmp/lpu_stub/lib ./build/bin/test-lpu-backend
+```
+
+The test passes only when its final summary reports `0 failed` and the process exits with code 0.
+
 For model format changes: run `test-backend-ops` to verify backend consistency. For perplexity/performance regressions: use `llama-perplexity` and `llama-bench` tools.
 
 ## Architecture
